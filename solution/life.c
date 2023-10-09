@@ -90,8 +90,8 @@ int main() {
     sfEvent event;
 
     while (sfRenderWindow_isOpen(simGetWindow()) && ++i < REPEAT_SIZE &&
-           sfRenderWindow_pollEvent(simGetWindow(), event)) {
-        if (event.type == svEvtClosed) {
+           sfRenderWindow_pollEvent(simGetWindow(), &event)) {
+        if (event.type == sfEvtClosed) {
             break;
         }
 

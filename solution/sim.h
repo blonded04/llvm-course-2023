@@ -11,12 +11,12 @@
 #define SIM_CELL_SIZE 4
 #define SIM_SPACING 1
 
-inline _Bool* simIsInitialized() {
+static inline _Bool* simIsInitialized() {
     static _Bool isInitialized = false;
     return &isInitialized;
 }
 
-inline sfRectangleShape* simGetBlock() {
+static inline sfRectangleShape* simGetBlock() {
     static sfRectangleShape* block = NULL;
     if (!block) {
         block = sfRectangleShape_create();
@@ -30,7 +30,7 @@ inline sfRectangleShape* simGetBlock() {
     return block;
 }
 
-inline void simInitialize(sfRenderWindow** window) {
+static inline void simInitialize(sfRenderWindow** window) {
     assert(!(*(simIsInitialized())));
     assert(window);
 
@@ -43,15 +43,7 @@ inline void simInitialize(sfRenderWindow** window) {
     simGetBlock();
 }
 
-inline void simCleanup() {
-    assert(*(simIsInitialized()));
-
-    sfRenderWindow_close(simGetWindow());
-    sfRectangleShape_destroy(simGetBlock());
-    sfRenderWindow_destroy(simGetWindow());
-}
-
-inline sfRenderWindow* simGetWindow() {
+static inline sfRenderWindow* simGetWindow() {
     static sfRenderWindow* window = NULL;
     if (!(*(simIsInitialized()))) {
         simInitialize(&window);
@@ -60,7 +52,15 @@ inline sfRenderWindow* simGetWindow() {
     return window;
 }
 
-inline void simSetPixel(int x, int y, _Bool isAlive) {
+static inline void simCleanup() {
+    assert(*(simIsInitialized()));
+
+    sfRenderWindow_close(simGetWindow());
+    sfRectangleShape_destroy(simGetBlock());
+    sfRenderWindow_destroy(simGetWindow());
+}
+
+static inline void simSetPixel(int x, int y, _Bool isAlive) {
     assert(0 <= x && x < SIM_X_SIZE);
     assert(0 <= y && y < SIM_Y_SIZE);
 
@@ -79,14 +79,16 @@ inline void simSetPixel(int x, int y, _Bool isAlive) {
     sfRenderWindow_drawRectangleShape(simGetWindow(), simGetBlock(), NULL);
 }
 
-inline void simFlush() {
+static inline void simFlush() {
     assert(*(simIsInitialized()));
 
     sfRenderWindow_display(simGetWindow());
 }
 
-inline void simClearWindow() { sfRenderWindow_clear(simGetWindow(), sfBlack); }
+static inline void simClearWindow() {
+    sfRenderWindow_clear(simGetWindow(), sfBlack);
+}
 
-inline int simRand() { return rand() & 1; }
+static inline int simRand() { return rand() & 1; }
 
 #endif // SIM_H_INCLUDED_
