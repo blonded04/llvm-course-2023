@@ -27,7 +27,7 @@ set(SOURCE life.c)
 add_executable(application ${SOURCE})
 target_link_libraries(application PRIVATE csfml-audio csfml-graphics csfml-system csfml-window)
 
-add_executable(applicationir ${SOURCE})
-target_link_libraries(applicationir PRIVATE csfml-audio csfml-graphics csfml-system csfml-window)
-target_compile_options(applicationir PUBLIC -emit-llvm)
+# add_executable(applicationir ${SOURCE})
+# target_link_libraries(applicationir PRIVATE csfml-audio csfml-graphics csfml-system csfml-window)
+# target_compile_options(applicationir PUBLIC -emit-llvm)
 

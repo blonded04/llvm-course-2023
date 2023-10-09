@@ -9,7 +9,6 @@
 #define SIM_X_SIZE 256
 #define SIM_Y_SIZE 128
 #define SIM_CELL_SIZE 4
-#define SIM_SPACING 1
 
 static inline _Bool* simIsInitialized() {
     static _Bool isInitialized = false;
@@ -20,10 +19,9 @@ static inline sfRectangleShape* simGetBlock() {
     static sfRectangleShape* block = NULL;
     if (!block) {
         block = sfRectangleShape_create();
-        sfVector2f size = {SIM_CELL_SIZE - SIM_SPACING,
-                           SIM_CELL_SIZE - SIM_SPACING};
+        sfVector2f size = {SIM_CELL_SIZE, SIM_CELL_SIZE};
         sfRectangleShape_setSize(block, size);
-        sfVector2f offset = {-SIM_SPACING, -SIM_SPACING};
+        sfVector2f offset = {0, 0};
         sfRectangleShape_setOrigin(block, offset);
     }
 
@@ -38,9 +36,11 @@ static inline void simInitialize(sfRenderWindow** window) {
                         32};
     *window = sfRenderWindow_create(mode, "Game of life", sfClose, NULL);
     sfRenderWindow_setKeyRepeatEnabled(*window, sfFalse);
-    sfRenderWindow_setFramerateLimit(*window, 24);
+    sfRenderWindow_setFramerateLimit(*window, 3);
 
     simGetBlock();
+
+    *(simIsInitialized()) = true;
 }
 
 static inline sfRenderWindow* simGetWindow() {
@@ -52,20 +52,23 @@ static inline sfRenderWindow* simGetWindow() {
     return window;
 }
 
-static inline void simCleanup() {
+static inline void simCleanup(_Bool shouldClose) {
     assert(*(simIsInitialized()));
 
-    sfRenderWindow_close(simGetWindow());
+    if (shouldClose) {
+        sfRenderWindow_close(simGetWindow());
+    }
     sfRectangleShape_destroy(simGetBlock());
     sfRenderWindow_destroy(simGetWindow());
+
+    *(simIsInitialized()) = false;
 }
 
 static inline void simSetPixel(int x, int y, _Bool isAlive) {
     assert(0 <= x && x < SIM_X_SIZE);
     assert(0 <= y && y < SIM_Y_SIZE);
 
-    sfVector2f blockPositions = {SIM_CELL_SIZE * (x - SIM_SPACING),
-                                 SIM_CELL_SIZE * (y - SIM_SPACING)};
+    sfVector2f blockPositions = {SIM_CELL_SIZE * x, SIM_CELL_SIZE * y};
     sfRectangleShape_setPosition(simGetBlock(), blockPositions);
 
     if (isAlive) {

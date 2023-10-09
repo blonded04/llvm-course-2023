@@ -1,5 +1,4 @@
 #include "sim.h"
-#define REPEAT_SIZE 1024
 
 void drawGeneration(unsigned* generation) {
     assert(generation);
@@ -73,7 +72,7 @@ void initializeGeneration(unsigned* generation) {
     unsigned y = 0;
     for (y = 0; y < SIM_Y_SIZE; y++) {
         for (x = 0; x < SIM_X_SIZE; x++) {
-            generation[y * SIM_X_SIZE + x] = simRand() % 2;
+            generation[y * SIM_X_SIZE + x] = simRand();
         }
     }
 }
@@ -89,21 +88,24 @@ int main() {
     unsigned i = 0;
     sfEvent event;
 
-    while (sfRenderWindow_isOpen(simGetWindow()) && ++i < REPEAT_SIZE &&
-           sfRenderWindow_pollEvent(simGetWindow(), &event)) {
-        if (event.type == sfEvtClosed) {
-            break;
+    while (sfRenderWindow_isOpen(simGetWindow())) {
+        while (sfRenderWindow_pollEvent(simGetWindow(), &event)) {
+            if (event.type == sfEvtClosed) {
+                simCleanup(false);
+
+                return 0;
+            }
+
+            calculateNextGeneration(nextGeneration, prevGeneration);
+            drawGeneration(nextGeneration);
+
+            unsigned* tmp = prevGeneration;
+            prevGeneration = nextGeneration;
+            nextGeneration = tmp;
         }
-
-        calculateNextGeneration(nextGeneration, prevGeneration);
-        drawGeneration(nextGeneration);
-
-        unsigned* tmp = prevGeneration;
-        prevGeneration = nextGeneration;
-        nextGeneration = tmp;
     }
 
-    simCleanup();
+    simCleanup(true);
 
     return 0;
 }
