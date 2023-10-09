@@ -72,7 +72,7 @@ void initializeGeneration(unsigned* generation) {
     unsigned y = 0;
     for (y = 0; y < SIM_Y_SIZE; y++) {
         for (x = 0; x < SIM_X_SIZE; x++) {
-            generation[y * SIM_X_SIZE + x] = simRand();
+            generation[y * SIM_X_SIZE + x] = (simRand() % SIM_INITIAL_DENSITY_MODULO == 0);
         }
     }
 }
@@ -83,28 +83,42 @@ int main() {
     unsigned* nextGeneration = generation1;
     unsigned* prevGeneration = generation2;
 
-    initializeGeneration(prevGeneration);
+    initializeGeneration(nextGeneration);
 
     unsigned i = 0;
     sfEvent event;
 
+    sfClock *clock = sfClock_create();
     while (sfRenderWindow_isOpen(simGetWindow())) {
-        while (sfRenderWindow_pollEvent(simGetWindow(), &event)) {
-            if (event.type == sfEvtClosed) {
-                simCleanup(false);
+        if (sfRenderWindow_pollEvent(simGetWindow(), &event) && event.type == sfEvtClosed) {
+            sfClock_destroy(clock);
+            simCleanup(false);
 
-                return 0;
-            }
-
-            calculateNextGeneration(nextGeneration, prevGeneration);
-            drawGeneration(nextGeneration);
-
-            unsigned* tmp = prevGeneration;
-            prevGeneration = nextGeneration;
-            nextGeneration = tmp;
+            return 0;
         }
+
+        if (sfTime_asSeconds(sfClock_getElapsedTime(clock)) * SIM_FRAMES_PER_SECOND < 1.0f) {
+            continue;
+        } else {
+            sfClock_restart(clock);
+        }
+
+        if (event.type == sfEvtClosed) {
+            sfClock_destroy(clock);
+            simCleanup(false);
+
+            return 0;
+        }
+
+        calculateNextGeneration(nextGeneration, prevGeneration);
+        drawGeneration(nextGeneration);
+
+        unsigned* tmp = prevGeneration;
+        prevGeneration = nextGeneration;
+        nextGeneration = tmp;
     }
 
+    sfClock_destroy(clock);
     simCleanup(true);
 
     return 0;

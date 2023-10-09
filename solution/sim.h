@@ -6,9 +6,11 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define SIM_X_SIZE 256
-#define SIM_Y_SIZE 128
-#define SIM_CELL_SIZE 4
+#define SIM_X_SIZE 100
+#define SIM_Y_SIZE 50
+#define SIM_CELL_SIZE 10
+#define SIM_FRAMES_PER_SECOND 2
+#define SIM_INITIAL_DENSITY_MODULO 5
 
 static inline _Bool* simIsInitialized() {
     static _Bool isInitialized = false;
@@ -21,8 +23,6 @@ static inline sfRectangleShape* simGetBlock() {
         block = sfRectangleShape_create();
         sfVector2f size = {SIM_CELL_SIZE, SIM_CELL_SIZE};
         sfRectangleShape_setSize(block, size);
-        sfVector2f offset = {0, 0};
-        sfRectangleShape_setOrigin(block, offset);
     }
 
     return block;
@@ -32,11 +32,13 @@ static inline void simInitialize(sfRenderWindow** window) {
     assert(!(*(simIsInitialized())));
     assert(window);
 
+    enum { ACTUAL_FRAMES_PER_SECOND = 24 };
+
     sfVideoMode mode = {SIM_X_SIZE * SIM_CELL_SIZE, SIM_Y_SIZE * SIM_CELL_SIZE,
                         32};
     *window = sfRenderWindow_create(mode, "Game of life", sfClose, NULL);
     sfRenderWindow_setKeyRepeatEnabled(*window, sfFalse);
-    sfRenderWindow_setFramerateLimit(*window, 3);
+    sfRenderWindow_setFramerateLimit(*window, ACTUAL_FRAMES_PER_SECOND);
 
     simGetBlock();
 
@@ -64,6 +66,10 @@ static inline void simCleanup(_Bool shouldClose) {
     *(simIsInitialized()) = false;
 }
 
+static inline void simClearWindow() {
+    sfRenderWindow_clear(simGetWindow(), sfBlack);
+}
+
 static inline void simSetPixel(int x, int y, _Bool isAlive) {
     assert(0 <= x && x < SIM_X_SIZE);
     assert(0 <= y && y < SIM_Y_SIZE);
@@ -88,10 +94,6 @@ static inline void simFlush() {
     sfRenderWindow_display(simGetWindow());
 }
 
-static inline void simClearWindow() {
-    sfRenderWindow_clear(simGetWindow(), sfBlack);
-}
-
-static inline int simRand() { return rand() & 1; }
+static inline int simRand() { return rand(); }
 
 #endif // SIM_H_INCLUDED_
