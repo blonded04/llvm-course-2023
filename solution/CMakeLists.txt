@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(CMAKE_C_COMPILER "/usr/bin/clang-12")
-set(CMAKE_CXX_COMPILER "/usr/bin/clang++-12")
+set(CMAKE_C_COMPILER clang-12)
 
 project(game-of-life)
 
@@ -27,7 +26,8 @@ set(SOURCE life.c)
 add_executable(application ${SOURCE})
 target_link_libraries(application PRIVATE csfml-audio csfml-graphics csfml-system csfml-window)
 
-# add_executable(applicationir ${SOURCE})
-# target_link_libraries(applicationir PRIVATE csfml-audio csfml-graphics csfml-system csfml-window)
-# target_compile_options(applicationir PUBLIC -emit-llvm)
 
+set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} "-flto")
+add_executable(applicationir ${SOURCE})
+target_link_libraries(applicationir PRIVATE csfml-audio csfml-graphics csfml-system csfml-window)
+target_compile_options(applicationir PUBLIC -emit-llvm -flto)
