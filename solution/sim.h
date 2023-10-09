@@ -1,33 +1,16 @@
+#ifndef SIM_H_INCLUDED_
+#define SIM_H_INCLUDED_
+
+#include "stdlib.h"
+
 #define SIM_X_SIZE 256
 #define SIM_Y_SIZE 128
-#define SIM_DISPLAY_MEM_ADDR 128*256
+#define SIM_DISPLAY_MEM_ADDR 128 * 256
 
-extern void simSetPixel(int x, int y, int argb);
-extern void simFlush();
-extern void simBkpt();
-extern int simRand();
+inline void simSetPixel(int x, int y, int argb);
 
-/*
-MOVli [stack reg] 32767
-BL [link reg] main
-EXIT
+inline void simFlush();
 
-simRand:
-RAND [arg0 reg]
-BR [link reg]
+inline int simRand() { return rand() & 1; }
 
-simFlush:
-FLUSH
-BR [link reg]
-
-simBkpt:
-BKPT
-BR [link reg]
-
-simSetPixel:
-MULi [tmp reg] [arg1 reg] 256
-ADDi [tmp reg] [tmp reg] 32767
-ADDi [tmp reg] [tmp reg] 1
-ST [arg2 reg] [tmp reg] [arg0 reg]
-BR [link reg]
-*/
+#endif // SIM_H_INCLUDED_

@@ -1,2 +1,4 @@
 **/.build/
 **/cmake_deps/
+**/.vscode/
+**/.history/
