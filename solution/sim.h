@@ -1,15 +1,91 @@
 #ifndef SIM_H_INCLUDED_
 #define SIM_H_INCLUDED_
 
-#include "stdlib.h"
+#include "SFML/Graphics.h"
+#include <assert.h>
+#include <stdbool.h>
+#include <stdlib.h>
 
 #define SIM_X_SIZE 256
 #define SIM_Y_SIZE 128
-#define SIM_DISPLAY_MEM_ADDR 128 * 256
+#define SIM_CELL_SIZE 4
+#define SIM_SPACING 1
 
-inline void simSetPixel(int x, int y, int argb);
+inline _Bool* simIsInitialized() {
+    static _Bool isInitialized = false;
+    return &isInitialized;
+}
 
-inline void simFlush();
+inline sfRectangleShape* simGetBlock() {
+    static sfRectangleShape* block = NULL;
+    if (!block) {
+        block = sfRectangleShape_create();
+        sfVector2f size = {SIM_CELL_SIZE - SIM_SPACING,
+                           SIM_CELL_SIZE - SIM_SPACING};
+        sfRectangleShape_setSize(block, size);
+        sfVector2f offset = {-SIM_SPACING, -SIM_SPACING};
+        sfRectangleShape_setOrigin(block, offset);
+    }
+
+    return block;
+}
+
+inline void simInitialize(sfRenderWindow** window) {
+    assert(!(*(simIsInitialized())));
+    assert(window);
+
+    sfVideoMode mode = {SIM_X_SIZE * SIM_CELL_SIZE, SIM_Y_SIZE * SIM_CELL_SIZE,
+                        32};
+    *window = sfRenderWindow_create(mode, "Game of life", sfClose, NULL);
+    sfRenderWindow_setKeyRepeatEnabled(*window, sfFalse);
+    sfRenderWindow_setFramerateLimit(*window, 24);
+
+    simGetBlock();
+}
+
+inline void simCleanup() {
+    assert(*(simIsInitialized()));
+
+    sfRenderWindow_close(simGetWindow());
+    sfRectangleShape_destroy(simGetBlock());
+    sfRenderWindow_destroy(simGetWindow());
+}
+
+inline sfRenderWindow* simGetWindow() {
+    static sfRenderWindow* window = NULL;
+    if (!(*(simIsInitialized()))) {
+        simInitialize(&window);
+    }
+
+    return window;
+}
+
+inline void simSetPixel(int x, int y, _Bool isAlive) {
+    assert(0 <= x && x < SIM_X_SIZE);
+    assert(0 <= y && y < SIM_Y_SIZE);
+
+    sfVector2f blockPositions = {SIM_CELL_SIZE * (x - SIM_SPACING),
+                                 SIM_CELL_SIZE * (y - SIM_SPACING)};
+    sfRectangleShape_setPosition(simGetBlock(), blockPositions);
+
+    if (isAlive) {
+        sfRectangleShape_setFillColor(simGetBlock(),
+                                      sfColor_fromRGB(0, 120, 215));
+    } else {
+        sfRectangleShape_setFillColor(simGetBlock(),
+                                      sfColor_fromRGB(40, 40, 40));
+    }
+
+    sfRenderWindow_drawRectangleShape(simGetWindow(), simGetBlock(), NULL);
+}
+
+inline void simFlush() {
+    assert(*(simIsInitialized()));
+
+    sfRenderWindow_display(simGetWindow());
+}
+
+inline void simClearWindow() { sfRenderWindow_clear(simGetWindow(), sfBlack); }
 
 inline int simRand() { return rand() & 1; }
 

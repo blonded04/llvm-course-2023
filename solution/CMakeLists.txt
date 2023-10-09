@@ -22,7 +22,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(csfml)
 
-set(SOURCE main.cpp)
+set(SOURCE life.c)
 
 add_executable(application ${SOURCE})
 target_link_libraries(application PRIVATE csfml-audio csfml-graphics csfml-system csfml-window)
