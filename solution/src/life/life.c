@@ -1,7 +1,6 @@
 #include "life.h"
 
 #include "sim/sim.h"
-#include <stdbool.h>
 #include <stdlib.h>
 
 static void drawGeneration(unsigned* generation) {
