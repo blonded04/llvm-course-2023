@@ -9,7 +9,7 @@ static void drawGeneration(unsigned* generation) {
     unsigned y = 0;
     for (y = 0; y < SIM_Y_SIZE; y++) {
         for (x = 0; x < SIM_X_SIZE; x++) {
-            simSetPixel(x, y, (_Bool)generation[y * SIM_X_SIZE + x]);
+            simSetPixel(x, y, (int)generation[y * SIM_X_SIZE + x]);
         }
     }
 

@@ -6,8 +6,8 @@
 #define SIM_PIXEL_SIZE 10
 #define SIM_INITIAL_DENSITY_MODULO 5
 
-static _Bool* simIsInitialized(void) {
-    static _Bool isInitialized = false;
+static int* simIsInitialized(void) {
+    static int isInitialized = 0;
     return &isInitialized;
 }
 
@@ -33,7 +33,7 @@ static void simInitialize(sfRenderWindow** window) {
 
     simGetBlock();
 
-    *(simIsInitialized()) = true;
+    *(simIsInitialized()) = 1;
 }
 
 static sfRenderWindow* simGetWindow(void) {
@@ -49,10 +49,10 @@ static void simCleanup(void) {
     sfRectangleShape_destroy(simGetBlock());
     sfRenderWindow_destroy(simGetWindow());
 
-    *(simIsInitialized()) = false;
+    *(simIsInitialized()) = 0;
 }
 
-_Bool simKeepRunning(void) {
+int simKeepRunning(void) {
     sfEvent event;
     sfClock* clock = sfClock_create();
     while (sfTime_asSeconds(sfClock_getElapsedTime(clock)) *
@@ -62,7 +62,7 @@ _Bool simKeepRunning(void) {
             sfClock_destroy(clock);
             simCleanup();
 
-            return false;
+            return 0;
         }
 
         if (sfRenderWindow_pollEvent(simGetWindow(), &event) &&
@@ -71,16 +71,16 @@ _Bool simKeepRunning(void) {
             sfClock_destroy(clock);
             simCleanup();
 
-            return false;
+            return 0;
         }
     }
 
     sfClock_restart(clock);
 
-    return true;
+    return 1;
 }
 
-void simSetPixel(int x, int y, _Bool isAlive) {
+void simSetPixel(int x, int y, int isAlive) {
     sfVector2f blockPositions = {SIM_PIXEL_SIZE * x, SIM_PIXEL_SIZE * y};
     sfRectangleShape_setPosition(simGetBlock(), blockPositions);
 
