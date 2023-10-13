@@ -5,8 +5,6 @@
 #include <stdlib.h>
 
 static void drawGeneration(unsigned* generation) {
-    simClearFrame();
-
     unsigned x = 0;
     unsigned y = 0;
     for (y = 0; y < SIM_Y_SIZE; y++) {

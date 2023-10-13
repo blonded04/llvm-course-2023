@@ -80,8 +80,6 @@ _Bool simKeepRunning(void) {
     return true;
 }
 
-void simClearFrame(void) { sfRenderWindow_clear(simGetWindow(), sfBlack); }
-
 void simSetPixel(int x, int y, _Bool isAlive) {
     sfVector2f blockPositions = {SIM_PIXEL_SIZE * x, SIM_PIXEL_SIZE * y};
     sfRectangleShape_setPosition(simGetBlock(), blockPositions);

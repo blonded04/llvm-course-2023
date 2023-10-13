@@ -9,8 +9,6 @@
 
 _Bool simKeepRunning(void);
 
-void simClearFrame(void);
-
 void simSetPixel(int x, int y, _Bool isAlive);
 
 void simFlush(void);
