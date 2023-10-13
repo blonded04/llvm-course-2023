@@ -1,9 +1,11 @@
-#include "sim.h"
+#include "life.h"
 
-void drawGeneration(unsigned* generation) {
-    assert(generation);
+#include "sim/sim.h"
+#include <stdbool.h>
+#include <stdlib.h>
 
-    simClearWindow();
+static void drawGeneration(unsigned* generation) {
+    simClearFrame();
 
     unsigned x = 0;
     unsigned y = 0;
@@ -16,11 +18,8 @@ void drawGeneration(unsigned* generation) {
     simFlush();
 }
 
-void calculateNextGeneration(unsigned* currentGeneration,
-                             unsigned* nextGeneration) {
-    assert(currentGeneration);
-    assert(nextGeneration);
-
+static void calculateNextGeneration(unsigned* currentGeneration,
+                                    unsigned* nextGeneration) {
     int x = 0;
     int y = 0;
     for (y = 0; y < SIM_Y_SIZE; y++) {
@@ -65,20 +64,17 @@ void calculateNextGeneration(unsigned* currentGeneration,
     }
 }
 
-void initializeGeneration(unsigned* generation) {
-    assert(generation);
-
+static void initializeGeneration(unsigned* generation) {
     unsigned x = 0;
     unsigned y = 0;
     for (y = 0; y < SIM_Y_SIZE; y++) {
         for (x = 0; x < SIM_X_SIZE; x++) {
-            generation[y * SIM_X_SIZE + x] =
-                (simRand() % SIM_INITIAL_DENSITY_MODULO == 0);
+            generation[y * SIM_X_SIZE + x] = simRand();
         }
     }
 }
 
-int main() {
+void app(void) {
     unsigned generation1[SIM_Y_SIZE * SIM_X_SIZE];
     unsigned generation2[SIM_Y_SIZE * SIM_X_SIZE];
     unsigned* nextGeneration = generation1;
@@ -86,34 +82,7 @@ int main() {
 
     initializeGeneration(nextGeneration);
 
-    unsigned i = 0;
-    sfEvent event;
-
-    sfClock* clock = sfClock_create();
-    while (sfRenderWindow_isOpen(simGetWindow())) {
-        if (sfRenderWindow_pollEvent(simGetWindow(), &event) &&
-            event.type == sfEvtClosed) {
-            sfClock_destroy(clock);
-            simCleanup(false);
-
-            return 0;
-        }
-
-        if (sfTime_asSeconds(sfClock_getElapsedTime(clock)) *
-                SIM_FRAMES_PER_SECOND <
-            1.0f) {
-            continue;
-        } else {
-            sfClock_restart(clock);
-        }
-
-        if (event.type == sfEvtClosed) {
-            sfClock_destroy(clock);
-            simCleanup(false);
-
-            return 0;
-        }
-
+    while (simKeepRunning()) {
         calculateNextGeneration(nextGeneration, prevGeneration);
         drawGeneration(nextGeneration);
 
@@ -121,9 +90,4 @@ int main() {
         prevGeneration = nextGeneration;
         nextGeneration = tmp;
     }
-
-    sfClock_destroy(clock);
-    simCleanup(true);
-
-    return 0;
 }

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 set(CMAKE_C_COMPILER clang-12)
 
-project(game-of-life)
+project(GameOfLife)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
@@ -21,13 +21,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(csfml)
 
-set(SOURCE life.c)
+add_subdirectory(src)
 
-add_executable(application ${SOURCE})
-target_link_libraries(application PRIVATE csfml-audio csfml-graphics csfml-system csfml-window)
-
-
-set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} "-flto")
-add_executable(applicationir ${SOURCE})
-target_link_libraries(applicationir PRIVATE csfml-audio csfml-graphics csfml-system csfml-window)
-target_compile_options(applicationir PUBLIC -emit-llvm -flto)
+add_subdirectory(apps)
