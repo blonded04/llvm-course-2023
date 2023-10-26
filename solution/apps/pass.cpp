@@ -12,10 +12,10 @@
 using namespace llvm;
 
 namespace {
-struct MyPass : public FunctionPass {
+struct PatternAnalyzerPass : public FunctionPass {
   public:
     inline static char ID = 0;
-    MyPass() : FunctionPass(ID) {}
+    PatternAnalyzerPass() : FunctionPass(ID) {}
 
   private:
     using Pattern = std::vector<Instruction>;
@@ -118,9 +118,10 @@ struct MyPass : public FunctionPass {
 
 // Automatically enable the pass.
 // http://adriansampson.net/blog/clangpass.html
-static void registerMyPass(const PassManagerBuilder&,
-                           legacy::PassManagerBase& PM) {
-    PM.add(new MyPass());
+static void registerPatternAnalyzerPass(const PassManagerBuilder&,
+                                        legacy::PassManagerBase& PM) {
+    PM.add(new PatternAnalyzerPass());
 }
 static RegisterStandardPasses
-    RegisterMyPass(PassManagerBuilder::EP_EarlyAsPossible, registerMyPass);
+    RegisterPatternAnalyzerPass(PassManagerBuilder::EP_EarlyAsPossible,
+                                registerPatternAnalyzerPass);
