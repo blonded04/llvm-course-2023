@@ -5,36 +5,77 @@
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
 
 #include <algorithm>
-#include <map>
+#include <cstdint>
+#include <functional>
+#include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
 using namespace llvm;
 
 namespace {
+std::string instructionToString(const Instruction& instruction) {
+    std::string str;
+    raw_string_ostream(str) << instruction;
+
+    return str;
+}
+
+using Pattern = std::vector<const Instruction*>;
+
+struct PatternHash {
+    std::uint64_t operator()(const Pattern& pattern) const {
+        std::uint64_t result = 0ull;
+        for (const auto& instruction : pattern) {
+            result +=
+                std::hash<std::string>{}(instructionToString(*instruction));
+        }
+
+        return result;
+    }
+};
+
+struct PatternEq {
+    bool operator()(const Pattern& lhs, const Pattern& rhs) const {
+        if (lhs.size() != rhs.size()) {
+            return false;
+        }
+
+        for (std::size_t i = 0; i < lhs.size(); i++) {
+            if (instructionToString(*lhs[i]) != instructionToString(*rhs[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+};
+
+using PatternStat = std::pair<Pattern, unsigned>;
+using PatternStats =
+    std::unordered_map<Pattern, unsigned, PatternHash, PatternEq>;
+
 struct PatternAnalyzerPass : public FunctionPass {
   public:
     inline static char ID = 0;
     PatternAnalyzerPass() : FunctionPass(ID) {}
 
   private:
-    using Pattern = std::vector<Instruction>;
-    using PatternStat = std::pair<Pattern, unsigned> using PatternStats =
-        std::map<Pattern, unsigned>;
-
     void printInstructionStatistics(const Instruction& instruction) {
-        outs() << "\tInstruction:\n\t- ";
+        outs() << "[INFO] \tInstruction:\n\t- ";
         instruction.print(outs(), true);
-        outs() << "\n\t\tUsed by:\n";
+        outs() << "\n[INFO] \t\tUsed by:\n";
         for (auto& userInfo : instruction.uses()) {
             User* user = userInfo.getUser();
-            outs << "\t\t* " user->print(outs(), true);
+            outs() << "[INFO] \t\t* ";
+            user->print(outs(), true);
             outs() << "\n";
         }
-        outs() << "\t\tUses:\n";
+        outs() << "[INFO] \t\tUses:\n";
         for (auto& usedInfo : instruction.operands()) {
             Value* use = usedInfo.get();
-            outs() << "\t\t- " use->print(outs(), true);
+            outs() << "[INFO] \t\t- ";
+            use->print(outs(), true);
             outs() << "\n";
         }
     }
@@ -50,7 +91,7 @@ struct PatternAnalyzerPass : public FunctionPass {
         const Instruction* slot_candidate = &instruction;
 
         do {
-            pattern.push_back(instruction);
+            pattern.push_back(&instruction);
 
             slot_candidate = slot_candidate->getPrevNonDebugInstruction();
             free_slots_in_window--;
@@ -59,16 +100,16 @@ struct PatternAnalyzerPass : public FunctionPass {
         std::reverse(pattern.begin(), pattern.end());
 
         if (pattern.size() == window_size) {
-            pattern[pattern]++;
+            patterns[pattern]++;
         }
     }
 
   public:
-    bool runOnFunction(const Function& function) override {
+    bool runOnFunction(Function& function) override {
         std::vector<PatternStats> stats(k_analyze_max_window_size -
                                         k_analyze_min_window_size + 1);
 
-        outs() << "In a function called " << function.getName() << "!\n";
+        outs() << "[INFO] In a function called " << function.getName() << "!\n";
         for (const auto& basic_block : function) {
             for (const auto& instruction : basic_block) {
                 printInstructionStatistics(instruction);
@@ -82,8 +123,8 @@ struct PatternAnalyzerPass : public FunctionPass {
             }
         }
 
-        outs() << "Analysis results for a function " << function.getName()
-               << ":\n";
+        outs() << "[INFO] Analysis results for a function "
+               << function.getName() << ":\n";
         for (unsigned window_size = k_analyze_min_window_size;
              window_size <= k_analyze_max_window_size; window_size++) {
             std::vector<PatternStat> most_frequent_patterns(
@@ -94,22 +135,23 @@ struct PatternAnalyzerPass : public FunctionPass {
                           return lhs.second > rhs.second;
                       });
 
-            outs() << "\tFor window of size " << window_size
+            outs() << "[INFO] \tFor window of size " << window_size
                    << " most frequent patterns are:\n";
             for (unsigned i = 0u;
-                 i < std::max(most_frequent_patterns.size(),
-                              k_stats_max_patterns_output_size);
+                 i <
+                 std::max(static_cast<unsigned>(most_frequent_patterns.size()),
+                          k_stats_max_patterns_output_size);
                  i++) {
-                outs() << "\t\t* Top " << i + 1 << " pattern is:\n";
+                outs() << "[INFO] \t\t* Top " << i + 1 << " pattern is:\n";
                 for (const auto& instruction :
                      most_frequent_patterns[i].first) {
-                    outs << "\t\t\t- ";
-                    instruction.print(outs(), true);
-                    outs << "\n";
+                    outs() << "[INFO] \t\t\t- ";
+                    instruction->print(outs(), true);
+                    outs() << "\n";
                 }
             }
         }
-        outs << "\n";
+        outs() << "\n";
 
         return false;
     }

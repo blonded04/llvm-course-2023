@@ -1,5 +1,4 @@
 set(MAIN_SOURCE main.c)
-set(PASS_SOURCE pass.cpp)
 
 add_executable(application ${MAIN_SOURCE})
 target_link_libraries(application PUBLIC life sim)
