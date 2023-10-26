@@ -62,7 +62,8 @@ struct PatternAnalyzerPass : public FunctionPass {
 
   private:
     void printInstructionStatistics(const Instruction& instruction, const std::string &functionName) {
-        outs() << "[INFO][" << functionName << "] \tInstruction:\n[INFO] \t- ";
+        outs() << "[INFO][" << functionName << "] \tInstruction:\n";
+        outs() << "[INFO][" << functionName << "] \t- ";
         instruction.print(outs(), true);
         outs() << "\n[INFO][" << functionName << "] \t\t* Used by:\n";
         for (auto& userInfo : instruction.uses()) {
