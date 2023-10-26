@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <functional>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -61,23 +62,36 @@ struct PatternAnalyzerPass : public FunctionPass {
     PatternAnalyzerPass() : FunctionPass(ID) {}
 
   private:
-    void printInstructionStatistics(const Instruction& instruction, const std::string &functionName) {
+    void printInstructionStatistics(const Instruction& instruction,
+                                    const std::string& functionName) {
         outs() << "[INFO][" << functionName << "] \tInstruction:\n";
         outs() << "[INFO][" << functionName << "] \t- ";
         instruction.print(outs(), true);
         outs() << "\n[INFO][" << functionName << "] \t\t* Used by:\n";
         for (auto& userInfo : instruction.uses()) {
             User* user = userInfo.getUser();
-            outs() << "[INFO][" << functionName << "] \t\t\t- ";
-            user->print(outs(), true);
-            outs() << "\n";
+
+            std::string str;
+            raw_string_ostream tempss(str);
+            user->print(tempss, true);
+            std::stringstream ss(str);
+            while (std::getline(ss, str)) {
+                outs() << "[INFO][" << functionName << "] \t\t\t- " << str
+                       << "\n";
+            }
         }
         outs() << "[INFO][" << functionName << "] \t\t* Uses:\n";
         for (auto& usedInfo : instruction.operands()) {
             Value* use = usedInfo.get();
-            outs() << "[INFO][" << functionName << "] \t\t\t- ";
-            use->print(outs(), true);
-            outs() << "\n";
+
+            std::string str;
+            raw_string_ostream tempss(str);
+            use->print(tempss, true);
+            std::stringstream ss(str);
+            while (std::getline(ss, str)) {
+                outs() << "[INFO][" << functionName << "] \t\t\t- " << str
+                       << "\n";
+            }
         }
     }
 
@@ -107,7 +121,8 @@ struct PatternAnalyzerPass : public FunctionPass {
 
   public:
     bool runOnFunction(Function& function) override {
-        if (function.getName().size() >= 3 && function.getName().substr(0, 3) == "sim") {
+        if (function.getName().size() >= 3 &&
+            function.getName().substr(0, 3) == "sim") {
             return false;
         }
 
@@ -117,7 +132,8 @@ struct PatternAnalyzerPass : public FunctionPass {
         outs() << "[INFO] In a function called " << function.getName() << "!\n";
         for (const auto& basic_block : function) {
             for (const auto& instruction : basic_block) {
-                printInstructionStatistics(instruction, function.getName().str());
+                printInstructionStatistics(instruction,
+                                           function.getName().str());
 
                 for (unsigned window_size = k_analyze_min_window_size;
                      window_size <= k_analyze_max_window_size; window_size++) {
@@ -141,15 +157,16 @@ struct PatternAnalyzerPass : public FunctionPass {
                           return lhs.second > rhs.second;
                       });
 
-            outs() << "[STAT][" << function.getName() << "] \tFor window of size " << window_size
+            outs() << "[STAT][" << function.getName()
+                   << "] \tFor window of size " << window_size
                    << " most frequent patterns are:\n";
             for (unsigned i = 0u;
                  i <
                  std::min(static_cast<unsigned>(most_frequent_patterns.size()),
                           k_stats_max_patterns_output_size);
                  i++) {
-                outs() << "[STAT][" << function.getName() << "] \t\t* Top " << i + 1
-                       << " pattern which occurs "
+                outs() << "[STAT][" << function.getName() << "] \t\t* Top "
+                       << i + 1 << " pattern which occurs "
                        << most_frequent_patterns[i].second << " times is:\n";
                 for (const auto& instruction :
                      most_frequent_patterns[i].first) {
