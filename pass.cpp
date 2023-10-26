@@ -61,20 +61,20 @@ struct PatternAnalyzerPass : public FunctionPass {
     PatternAnalyzerPass() : FunctionPass(ID) {}
 
   private:
-    void printInstructionStatistics(const Instruction& instruction) {
-        outs() << "[INFO] \tInstruction:\n[INFO] \t- ";
+    void printInstructionStatistics(const Instruction& instruction, const std::string &functionName) {
+        outs() << "[INFO][" << functionName << "] \tInstruction:\n[INFO] \t- ";
         instruction.print(outs(), true);
-        outs() << "\n[INFO] \t\t* Used by:\n";
+        outs() << "\n[INFO][" << functionName << "] \t\t* Used by:\n";
         for (auto& userInfo : instruction.uses()) {
             User* user = userInfo.getUser();
-            outs() << "[INFO] \t\t\t- ";
+            outs() << "[INFO][" << functionName << "] \t\t\t- ";
             user->print(outs(), true);
             outs() << "\n";
         }
-        outs() << "[INFO] \t\t* Uses:\n";
+        outs() << "[INFO][" << functionName << "] \t\t* Uses:\n";
         for (auto& usedInfo : instruction.operands()) {
             Value* use = usedInfo.get();
-            outs() << "[INFO] \t\t\t- ";
+            outs() << "[INFO][" << functionName << "] \t\t\t- ";
             use->print(outs(), true);
             outs() << "\n";
         }
@@ -106,13 +106,17 @@ struct PatternAnalyzerPass : public FunctionPass {
 
   public:
     bool runOnFunction(Function& function) override {
+        if (function.getName().size() >= 3 && function.getName().substr(0, 3) == "sim") {
+            return false;
+        }
+
         std::vector<PatternStats> stats(k_analyze_max_window_size -
                                         k_analyze_min_window_size + 1);
 
         outs() << "[INFO] In a function called " << function.getName() << "!\n";
         for (const auto& basic_block : function) {
             for (const auto& instruction : basic_block) {
-                printInstructionStatistics(instruction);
+                printInstructionStatistics(instruction, function.getName().str());
 
                 for (unsigned window_size = k_analyze_min_window_size;
                      window_size <= k_analyze_max_window_size; window_size++) {
@@ -136,19 +140,19 @@ struct PatternAnalyzerPass : public FunctionPass {
                           return lhs.second > rhs.second;
                       });
 
-            outs() << "[STAT] \tFor window of size " << window_size
+            outs() << "[STAT][" << function.getName() << "] \tFor window of size " << window_size
                    << " most frequent patterns are:\n";
             for (unsigned i = 0u;
                  i <
                  std::min(static_cast<unsigned>(most_frequent_patterns.size()),
                           k_stats_max_patterns_output_size);
                  i++) {
-                outs() << "[STAT] \t\t* Top " << i + 1
+                outs() << "[STAT][" << function.getName() << "] \t\t* Top " << i + 1
                        << " pattern which occurs "
                        << most_frequent_patterns[i].second << " times is:\n";
                 for (const auto& instruction :
                      most_frequent_patterns[i].first) {
-                    outs() << "[STAT] \t\t\t- "
+                    outs() << "[STAT][" << function.getName() << "] \t\t\t- "
                            << instructionToString(*instruction) << "\n";
                 }
             }

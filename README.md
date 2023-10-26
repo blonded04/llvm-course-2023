@@ -14,5 +14,6 @@ cmake -S . -B build
 cd ../
 clang++-12 -std=c++17 pass.cpp -c -fPIC -I`llvm-config-12 --includedir` -o pass.o
 clang++-12 pass.o -fPIC -shared -o libpass.so
-clang-12 ./solution/apps/main.c -I./solution/include/ -L./solution/build/src/ -Xclang -load -Xclang ./libpass.so -flegacy-pass-manager
+clang-12 ./solution/src/sim/sim.c -I./solution/include/sim/ -I./solution/cmake_deps/csfml-src/include/ -c
+clang-12 ./solution/apps/main.c ./solution/src/life/life.c ./solution/src/sim/sim.c -I./solution/include/ -I./solution/include/life/ -I./solution/include/sim/ -lcsfml-graphics -lcsfml-system -Xclang -load -Xclang ./libpass.so -flegacy-pass-manager
 ```
