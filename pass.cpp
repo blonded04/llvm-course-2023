@@ -94,8 +94,8 @@ struct PatternAnalyzerPass : public FunctionPass {
     static inline constexpr unsigned k_analyze_max_window_size = 5u;
     static inline constexpr unsigned k_stats_max_patterns_output_size = 3u;
 
-    static inline std::vector<PatternStats> globalStats(k_analyze_max_window_size -
-                                                        k_analyze_min_window_size + 1);
+    static inline std::vector<PatternStats> globalStats =
+        std::vector<PatternStats>(k_analyze_max_window_size - k_analyze_min_window_size + 1);
 
     void analyzeInstruction(const Instruction& instruction, unsigned window_size, PatternStats& patterns) {
         Pattern pattern;
@@ -177,16 +177,14 @@ struct PatternAnalyzerPass : public FunctionPass {
             std::sort(most_frequent_patterns.begin(), most_frequent_patterns.end(),
                       [](const PatternStat& lhs, const PatternStat& rhs) { return lhs.second > rhs.second; });
 
-            outs() << "[STAT][" << function.getName() << "] \tFor window of size " << window_size
-                   << " most frequent patterns are:\n";
+            outs() << "[STAT] \tFor window of size " << window_size << " most frequent patterns are:\n";
             for (unsigned i = 0u; i < std::min(static_cast<unsigned>(most_frequent_patterns.size()),
                                                k_stats_max_patterns_output_size);
                  i++) {
-                outs() << "[STAT][" << function.getName() << "] \t\t* Top " << i + 1
-                       << " pattern which occurs " << most_frequent_patterns[i].second << " times is:\n";
+                outs() << "[STAT] \t\t* Top " << i + 1 << " pattern which occurs "
+                       << most_frequent_patterns[i].second << " times is:\n";
                 for (const auto& instruction : most_frequent_patterns[i].first) {
-                    outs() << "[STAT][" << function.getName() << "] \t\t\t- "
-                           << instructionToString(*instruction) << "\n";
+                    outs() << "[STAT] \t\t\t- " << instructionToString(*instruction) << "\n";
                 }
             }
         }

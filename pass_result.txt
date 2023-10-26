@@ -1,0 +1,66 @@
+[STAT] Global program analysis:
+[STAT] 	For window of size 1 most frequent patterns are:
+[STAT] 		* Top 1 pattern which occurs 4 times is:
+[STAT] 			-   store i32 0, i32* %4, align 4
+[STAT] 		* Top 2 pattern which occurs 4 times is:
+[STAT] 			-   br label %65
+[STAT] 		* Top 3 pattern which occurs 4 times is:
+[STAT] 			-   ret void
+[STAT] 	For window of size 2 most frequent patterns are:
+[STAT] 		* Top 1 pattern which occurs 2 times is:
+[STAT] 			-   %3 = alloca i32, align 4
+[STAT] 			-   %4 = alloca i32, align 4
+[STAT] 		* Top 2 pattern which occurs 2 times is:
+[STAT] 			-   store i32 0, i32* %4, align 4
+[STAT] 			-   br label %5
+[STAT] 		* Top 3 pattern which occurs 2 times is:
+[STAT] 			-   %6 = load i32, i32* %4, align 4
+[STAT] 			-   %7 = icmp ult i32 %6, 50
+[STAT] 	For window of size 3 most frequent patterns are:
+[STAT] 		* Top 1 pattern which occurs 2 times is:
+[STAT] 			-   %4 = alloca i32, align 4
+[STAT] 			-   store i32* %0, i32** %2, align 8
+[STAT] 			-   store i32 0, i32* %3, align 4
+[STAT] 		* Top 2 pattern which occurs 2 times is:
+[STAT] 			-   %2 = alloca i32*, align 8
+[STAT] 			-   %3 = alloca i32, align 4
+[STAT] 			-   %4 = alloca i32, align 4
+[STAT] 		* Top 3 pattern which occurs 2 times is:
+[STAT] 			-   %3 = alloca i32, align 4
+[STAT] 			-   %4 = alloca i32, align 4
+[STAT] 			-   store i32* %0, i32** %2, align 8
+[STAT] 	For window of size 4 most frequent patterns are:
+[STAT] 		* Top 1 pattern which occurs 2 times is:
+[STAT] 			-   store i32* %0, i32** %2, align 8
+[STAT] 			-   store i32 0, i32* %3, align 4
+[STAT] 			-   store i32 0, i32* %4, align 4
+[STAT] 			-   store i32 0, i32* %4, align 4
+[STAT] 		* Top 2 pattern which occurs 2 times is:
+[STAT] 			-   %3 = alloca i32, align 4
+[STAT] 			-   %4 = alloca i32, align 4
+[STAT] 			-   store i32* %0, i32** %2, align 8
+[STAT] 			-   store i32 0, i32* %3, align 4
+[STAT] 		* Top 3 pattern which occurs 2 times is:
+[STAT] 			-   store i32 0, i32* %3, align 4
+[STAT] 			-   store i32 0, i32* %4, align 4
+[STAT] 			-   store i32 0, i32* %4, align 4
+[STAT] 			-   br label %5
+[STAT] 	For window of size 5 most frequent patterns are:
+[STAT] 		* Top 1 pattern which occurs 2 times is:
+[STAT] 			-   %4 = alloca i32, align 4
+[STAT] 			-   store i32* %0, i32** %2, align 8
+[STAT] 			-   store i32 0, i32* %3, align 4
+[STAT] 			-   store i32 0, i32* %4, align 4
+[STAT] 			-   store i32 0, i32* %4, align 4
+[STAT] 		* Top 2 pattern which occurs 2 times is:
+[STAT] 			-   store i32* %0, i32** %2, align 8
+[STAT] 			-   store i32 0, i32* %3, align 4
+[STAT] 			-   store i32 0, i32* %4, align 4
+[STAT] 			-   store i32 0, i32* %4, align 4
+[STAT] 			-   br label %5
+[STAT] 		* Top 3 pattern which occurs 2 times is:
+[STAT] 			-   %2 = alloca i32*, align 8
+[STAT] 			-   %3 = alloca i32, align 4
+[STAT] 			-   %4 = alloca i32, align 4
+[STAT] 			-   store i32* %0, i32** %2, align 8
+[STAT] 			-   store i32 0, i32* %3, align 4
