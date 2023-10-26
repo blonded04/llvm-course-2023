@@ -62,27 +62,27 @@ struct PatternAnalyzerPass : public FunctionPass {
 
   private:
     void printInstructionStatistics(const Instruction& instruction) {
-        outs() << "[INFO] \tInstruction:\n\t- ";
+        outs() << "[INFO] \tInstruction:\n[INFO] \t- ";
         instruction.print(outs(), true);
-        outs() << "\n[INFO] \t\tUsed by:\n";
+        outs() << "\n[INFO] \t\t* Used by:\n";
         for (auto& userInfo : instruction.uses()) {
             User* user = userInfo.getUser();
-            outs() << "[INFO] \t\t* ";
+            outs() << "[INFO] \t\t\t- ";
             user->print(outs(), true);
             outs() << "\n";
         }
-        outs() << "[INFO] \t\tUses:\n";
+        outs() << "[INFO] \t\t* Uses:\n";
         for (auto& usedInfo : instruction.operands()) {
             Value* use = usedInfo.get();
-            outs() << "[INFO] \t\t- ";
+            outs() << "[INFO] \t\t\t- ";
             use->print(outs(), true);
             outs() << "\n";
         }
     }
 
-    static inline constexpr unsigned k_analyze_min_window_size = 2u;
+    static inline constexpr unsigned k_analyze_min_window_size = 1u;
     static inline constexpr unsigned k_analyze_max_window_size = 5u;
-    static inline constexpr unsigned k_stats_max_patterns_output_size = 5u;
+    static inline constexpr unsigned k_stats_max_patterns_output_size = 3u;
 
     void analyzeInstruction(const Instruction& instruction,
                             unsigned window_size, PatternStats& patterns) {
@@ -91,7 +91,7 @@ struct PatternAnalyzerPass : public FunctionPass {
         const Instruction* slot_candidate = &instruction;
 
         do {
-            pattern.push_back(&instruction);
+            pattern.push_back(slot_candidate);
 
             slot_candidate = slot_candidate->getPrevNonDebugInstruction();
             free_slots_in_window--;
@@ -123,34 +123,35 @@ struct PatternAnalyzerPass : public FunctionPass {
             }
         }
 
-        outs() << "[INFO] Analysis results for a function "
+        outs() << "\n[STAT] Analysis results for a function "
                << function.getName() << ":\n";
         for (unsigned window_size = k_analyze_min_window_size;
              window_size <= k_analyze_max_window_size; window_size++) {
             std::vector<PatternStat> most_frequent_patterns(
-                stats[window_size].begin(), stats[window_size].end());
+                stats[window_size - k_analyze_min_window_size].begin(), stats[window_size - k_analyze_max_window_size].end());
             std::sort(most_frequent_patterns.begin(),
                       most_frequent_patterns.end(),
                       [](const PatternStat& lhs, const PatternStat& rhs) {
                           return lhs.second > rhs.second;
                       });
 
-            outs() << "[INFO] \tFor window of size " << window_size
+            outs() << "[STAT] \tFor window of size " << window_size
                    << " most frequent patterns are:\n";
             for (unsigned i = 0u;
                  i <
-                 std::max(static_cast<unsigned>(most_frequent_patterns.size()),
+                 std::min(static_cast<unsigned>(most_frequent_patterns.size()),
                           k_stats_max_patterns_output_size);
                  i++) {
-                outs() << "[INFO] \t\t* Top " << i + 1 << " pattern is:\n";
+                outs() << "[STAT] \t\t* Top " << i + 1
+                       << " pattern which occurs "
+                       << most_frequent_patterns[i].second << " times is:\n";
                 for (const auto& instruction :
                      most_frequent_patterns[i].first) {
-                    outs() << "[INFO] \t\t\t- ";
-                    instruction->print(outs(), true);
-                    outs() << "\n";
+                    outs() << "[STAT] \t\t\t- " << instructionToString(*instruction) << "\n";
                 }
             }
         }
+        outs() << "\n";
         outs() << "\n";
 
         return false;
