@@ -128,7 +128,8 @@ struct PatternAnalyzerPass : public FunctionPass {
         for (unsigned window_size = k_analyze_min_window_size;
              window_size <= k_analyze_max_window_size; window_size++) {
             std::vector<PatternStat> most_frequent_patterns(
-                stats[window_size - k_analyze_min_window_size].begin(), stats[window_size - k_analyze_max_window_size].end());
+                stats[window_size - k_analyze_min_window_size].begin(),
+                stats[window_size - k_analyze_max_window_size].end());
             std::sort(most_frequent_patterns.begin(),
                       most_frequent_patterns.end(),
                       [](const PatternStat& lhs, const PatternStat& rhs) {
@@ -147,7 +148,8 @@ struct PatternAnalyzerPass : public FunctionPass {
                        << most_frequent_patterns[i].second << " times is:\n";
                 for (const auto& instruction :
                      most_frequent_patterns[i].first) {
-                    outs() << "[STAT] \t\t\t- " << instructionToString(*instruction) << "\n";
+                    outs() << "[STAT] \t\t\t- "
+                           << instructionToString(*instruction) << "\n";
                 }
             }
         }
