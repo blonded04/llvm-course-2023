@@ -25,8 +25,7 @@ static sfRectangleShape* simGetBlock(void) {
 static void simInitialize(sfRenderWindow** window) {
     enum { ACTUAL_FRAMES_PER_SECOND = 24 };
 
-    sfVideoMode mode = {SIM_X_SIZE * SIM_PIXEL_SIZE,
-                        SIM_Y_SIZE * SIM_PIXEL_SIZE, 32};
+    sfVideoMode mode = {SIM_X_SIZE * SIM_PIXEL_SIZE, SIM_Y_SIZE * SIM_PIXEL_SIZE, 32};
     *window = sfRenderWindow_create(mode, "Game of life", sfClose, NULL);
     sfRenderWindow_setKeyRepeatEnabled(*window, sfFalse);
     sfRenderWindow_setFramerateLimit(*window, ACTUAL_FRAMES_PER_SECOND);
@@ -55,9 +54,7 @@ static void simCleanup(void) {
 int simKeepRunning(void) {
     sfEvent event;
     sfClock* clock = sfClock_create();
-    while (sfTime_asSeconds(sfClock_getElapsedTime(clock)) *
-               SIM_FRAMES_PER_SECOND <
-           1.0f) {
+    while (sfTime_asSeconds(sfClock_getElapsedTime(clock)) * SIM_FRAMES_PER_SECOND < 1.0f) {
         if (!sfRenderWindow_isOpen(simGetWindow())) {
             sfClock_destroy(clock);
             simCleanup();
@@ -65,8 +62,7 @@ int simKeepRunning(void) {
             return 0;
         }
 
-        if (sfRenderWindow_pollEvent(simGetWindow(), &event) &&
-            event.type == sfEvtClosed) {
+        if (sfRenderWindow_pollEvent(simGetWindow(), &event) && event.type == sfEvtClosed) {
             sfRenderWindow_close(simGetWindow());
             sfClock_destroy(clock);
             simCleanup();
@@ -85,11 +81,9 @@ void simSetPixel(int x, int y, int isAlive) {
     sfRectangleShape_setPosition(simGetBlock(), blockPositions);
 
     if (isAlive) {
-        sfRectangleShape_setFillColor(simGetBlock(),
-                                      sfColor_fromRGB(0, 120, 215));
+        sfRectangleShape_setFillColor(simGetBlock(), sfColor_fromRGB(0, 120, 215));
     } else {
-        sfRectangleShape_setFillColor(simGetBlock(),
-                                      sfColor_fromRGB(40, 40, 40));
+        sfRectangleShape_setFillColor(simGetBlock(), sfColor_fromRGB(40, 40, 40));
     }
 
     sfRenderWindow_drawRectangleShape(simGetWindow(), simGetBlock(), NULL);

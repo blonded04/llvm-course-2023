@@ -14,8 +14,7 @@ static void drawGeneration(unsigned* generation) {
     simFlush();
 }
 
-static void calculateNextGeneration(unsigned* currentGeneration,
-                                    unsigned* nextGeneration) {
+static void calculateNextGeneration(unsigned* currentGeneration, unsigned* nextGeneration) {
     int x = 0;
     int y = 0;
     for (y = 0; y < SIM_Y_SIZE; y++) {
@@ -38,8 +37,7 @@ static void calculateNextGeneration(unsigned* currentGeneration,
                         continue;
                     }
 
-                    aliveNeighbours +=
-                        currentGeneration[newY * SIM_X_SIZE + newX];
+                    aliveNeighbours += currentGeneration[newY * SIM_X_SIZE + newX];
                 }
             }
 
