@@ -8,7 +8,11 @@ For HW-01's solution via LLVM Pass collect executed instructions and / or uses o
 #### Usage
 
 ```bash
-clang++ -std=c++17 pass.cpp -c -fPIC -I`llvm-config --includedir` -o pass.o
-clang++ pass.o -fPIC -shared -o libpass.so
-clang apps/main.c -lSDL2 -Xclang -load -Xclang libpass.so -flegacy-pass-manager
+cd solution
+cmake -S . -B build
+
+cd ../
+clang++-12 -std=c++17 pass.cpp -c -fPIC -I`llvm-config-12 --includedir` -o pass.o
+clang++-12 pass.o -fPIC -shared -o libpass.so
+clang-12 ./solution/apps/main.c -I./solution/include/ -L./solution/build/src/ -Xclang -load -Xclang ./libpass.so -flegacy-pass-manager
 ```
