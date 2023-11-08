@@ -1,66 +1,87 @@
-[STAT] Global program analysis:
-[STAT] 	For window of size 1 most frequent patterns are:
-[STAT] 		* Top 1 pattern which occurs 4 times is:
-[STAT] 			-   store i32 0, i32* %4, align 4
-[STAT] 		* Top 2 pattern which occurs 4 times is:
-[STAT] 			-   br label %65
-[STAT] 		* Top 3 pattern which occurs 4 times is:
-[STAT] 			-   ret void
-[STAT] 	For window of size 2 most frequent patterns are:
-[STAT] 		* Top 1 pattern which occurs 2 times is:
-[STAT] 			-   %3 = alloca i32, align 4
-[STAT] 			-   %4 = alloca i32, align 4
-[STAT] 		* Top 2 pattern which occurs 2 times is:
-[STAT] 			-   store i32 0, i32* %4, align 4
-[STAT] 			-   br label %5
-[STAT] 		* Top 3 pattern which occurs 2 times is:
-[STAT] 			-   %6 = load i32, i32* %4, align 4
-[STAT] 			-   %7 = icmp ult i32 %6, 50
-[STAT] 	For window of size 3 most frequent patterns are:
-[STAT] 		* Top 1 pattern which occurs 2 times is:
-[STAT] 			-   %4 = alloca i32, align 4
-[STAT] 			-   store i32* %0, i32** %2, align 8
-[STAT] 			-   store i32 0, i32* %3, align 4
-[STAT] 		* Top 2 pattern which occurs 2 times is:
-[STAT] 			-   %2 = alloca i32*, align 8
-[STAT] 			-   %3 = alloca i32, align 4
-[STAT] 			-   %4 = alloca i32, align 4
-[STAT] 		* Top 3 pattern which occurs 2 times is:
-[STAT] 			-   %3 = alloca i32, align 4
-[STAT] 			-   %4 = alloca i32, align 4
-[STAT] 			-   store i32* %0, i32** %2, align 8
-[STAT] 	For window of size 4 most frequent patterns are:
-[STAT] 		* Top 1 pattern which occurs 2 times is:
-[STAT] 			-   store i32* %0, i32** %2, align 8
-[STAT] 			-   store i32 0, i32* %3, align 4
-[STAT] 			-   store i32 0, i32* %4, align 4
-[STAT] 			-   store i32 0, i32* %4, align 4
-[STAT] 		* Top 2 pattern which occurs 2 times is:
-[STAT] 			-   %3 = alloca i32, align 4
-[STAT] 			-   %4 = alloca i32, align 4
-[STAT] 			-   store i32* %0, i32** %2, align 8
-[STAT] 			-   store i32 0, i32* %3, align 4
-[STAT] 		* Top 3 pattern which occurs 2 times is:
-[STAT] 			-   store i32 0, i32* %3, align 4
-[STAT] 			-   store i32 0, i32* %4, align 4
-[STAT] 			-   store i32 0, i32* %4, align 4
-[STAT] 			-   br label %5
-[STAT] 	For window of size 5 most frequent patterns are:
-[STAT] 		* Top 1 pattern which occurs 2 times is:
-[STAT] 			-   %4 = alloca i32, align 4
-[STAT] 			-   store i32* %0, i32** %2, align 8
-[STAT] 			-   store i32 0, i32* %3, align 4
-[STAT] 			-   store i32 0, i32* %4, align 4
-[STAT] 			-   store i32 0, i32* %4, align 4
-[STAT] 		* Top 2 pattern which occurs 2 times is:
-[STAT] 			-   store i32* %0, i32** %2, align 8
-[STAT] 			-   store i32 0, i32* %3, align 4
-[STAT] 			-   store i32 0, i32* %4, align 4
-[STAT] 			-   store i32 0, i32* %4, align 4
-[STAT] 			-   br label %5
-[STAT] 		* Top 3 pattern which occurs 2 times is:
-[STAT] 			-   %2 = alloca i32*, align 8
-[STAT] 			-   %3 = alloca i32, align 4
-[STAT] 			-   %4 = alloca i32, align 4
-[STAT] 			-   store i32* %0, i32** %2, align 8
-[STAT] 			-   store i32 0, i32* %3, align 4
+Statistics:
+
+	Top 3 most frequent patterns of size 2 are:
+	* Top 1 pattern occurs 368306 times
+	--1-- [LOG] In function 'calculateNextGeneration': 'add' occured
+	--1-- [LOG] In function 'calculateNextGeneration': 'add' occured
+	* Top 2 pattern occurs 215674 times
+	--2-- [LOG] Start function 'simIsInitialized'
+	--2-- [LOG] End function 'simIsInitialized'
+	* Top 3 pattern occurs 215672 times
+	--3-- [LOG] Start function 'simGetWindow'
+	--3-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
+
+	Top 3 most frequent patterns of size 3 are:
+	* Top 1 pattern occurs 280096 times
+	--1-- [LOG] In function 'calculateNextGeneration': 'add' occured
+	--1-- [LOG] In function 'calculateNextGeneration': 'add' occured
+	--1-- [LOG] In function 'calculateNextGeneration': 'add' occured
+	* Top 2 pattern occurs 215672 times
+	--2-- [LOG] Start function 'simGetWindow'
+	--2-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
+	--2-- [LOG] Start function 'simIsInitialized'
+	* Top 3 pattern occurs 215672 times
+	--3-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
+	--3-- [LOG] Start function 'simIsInitialized'
+	--3-- [LOG] End function 'simIsInitialized'
+
+	Top 3 most frequent patterns of size 4 are:
+	* Top 1 pattern occurs 215672 times
+	--1-- [LOG] Start function 'simGetWindow'
+	--1-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
+	--1-- [LOG] Start function 'simIsInitialized'
+	--1-- [LOG] End function 'simIsInitialized'
+	* Top 2 pattern occurs 215671 times
+	--2-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
+	--2-- [LOG] Start function 'simIsInitialized'
+	--2-- [LOG] End function 'simIsInitialized'
+	--2-- [LOG] End function 'simGetWindow'
+	* Top 3 pattern occurs 205669 times
+	--3-- [LOG] CALL 'simKeepRunning' -> 'simGetWindow'
+	--3-- [LOG] Start function 'simGetWindow'
+	--3-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
+	--3-- [LOG] Start function 'simIsInitialized'
+
+	Top 3 most frequent patterns of size 5 are:
+	* Top 1 pattern occurs 215671 times
+	--1-- [LOG] Start function 'simGetWindow'
+	--1-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
+	--1-- [LOG] Start function 'simIsInitialized'
+	--1-- [LOG] End function 'simIsInitialized'
+	--1-- [LOG] End function 'simGetWindow'
+	* Top 2 pattern occurs 205669 times
+	--2-- [LOG] CALL 'simKeepRunning' -> 'simGetWindow'
+	--2-- [LOG] Start function 'simGetWindow'
+	--2-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
+	--2-- [LOG] Start function 'simIsInitialized'
+	--2-- [LOG] End function 'simIsInitialized'
+	* Top 3 pattern occurs 103678 times
+	--3-- [LOG] In function 'calculateNextGeneration': 'add' occured
+	--3-- [LOG] In function 'calculateNextGeneration': 'add' occured
+	--3-- [LOG] In function 'calculateNextGeneration': 'add' occured
+	--3-- [LOG] In function 'calculateNextGeneration': 'add' occured
+	--3-- [LOG] In function 'calculateNextGeneration': 'add' occured
+
+	Top 3 most frequent patterns of size 6 are:
+	* Top 1 pattern occurs 205668 times
+	--1-- [LOG] CALL 'simKeepRunning' -> 'simGetWindow'
+	--1-- [LOG] Start function 'simGetWindow'
+	--1-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
+	--1-- [LOG] Start function 'simIsInitialized'
+	--1-- [LOG] End function 'simIsInitialized'
+	--1-- [LOG] End function 'simGetWindow'
+	* Top 2 pattern occurs 102834 times
+	--2-- [LOG] CALL 'simKeepRunning' -> 'sfRenderWindow_isOpen'
+	--2-- [LOG] CALL 'simKeepRunning' -> 'simGetWindow'
+	--2-- [LOG] Start function 'simGetWindow'
+	--2-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
+	--2-- [LOG] Start function 'simIsInitialized'
+	--2-- [LOG] End function 'simIsInitialized'
+	* Top 3 pattern occurs 102834 times
+	--3-- [LOG] CALL 'simKeepRunning' -> 'sfTime_asSeconds'
+	--3-- [LOG] In function 'simKeepRunning': 'fmul' occured
+	--3-- [LOG] CALL 'simKeepRunning' -> 'simGetWindow'
+	--3-- [LOG] Start function 'simGetWindow'
+	--3-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
+	--3-- [LOG] Start function 'simIsInitialized'
+
