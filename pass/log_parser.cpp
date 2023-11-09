@@ -5,8 +5,8 @@
 #include <iterator>
 #include <map>
 #include <string>
-#include <vector>
 #include <utility>
+#include <vector>
 
 constexpr std::size_t k_min_window_size = 2u;
 constexpr std::size_t k_max_window_size = 6u;
@@ -30,7 +30,7 @@ int main() {
                 std::next(last_lines.end(), -static_cast<std::int64_t>(sz)), last_lines.end())]++;
         }
     }
-    
+
     std::cout << "Statistics:\n\n";
     for (std::size_t sz = k_min_window_size; sz <= k_max_window_size; sz++) {
         std::vector<std::pair<std::vector<std::string>, unsigned>> most_frequent(
@@ -44,9 +44,11 @@ int main() {
             break;
         }
 
-        std::cout << "\tTop " << most_frequent.size() << " most frequent patterns of size " << sz << " are:\n";
+        std::cout << "\tTop " << most_frequent.size() << " most frequent patterns of size " << sz
+                  << " are:\n";
         for (std::size_t iter = 0ul; iter < most_frequent.size(); iter++) {
-            std::cout << "\t* Top " << iter + 1 << " pattern occurs " << most_frequent[iter].second << " times\n";
+            std::cout << "\t* Top " << iter + 1 << " pattern occurs " << most_frequent[iter].second
+                      << " times\n";
             for (const auto& frequent_line : most_frequent[iter].first) {
                 std::cout << "\t--" << iter + 1 << "-- " << frequent_line << "\n";
             }
