@@ -25,37 +25,31 @@ struct PatternAnalyzerPass : public FunctionPass {
             return false;
         }
 
-        // Prepare builder for IR modification
         LLVMContext& Ctx = F.getContext();
         IRBuilder<> builder(Ctx);
         Type* retType = Type::getVoidTy(Ctx);
 
-        // Prepare funcStartLogger function
         ArrayRef<Type*> funcStartParamTypes = {builder.getInt8Ty()->getPointerTo()};
         FunctionType* funcStartLogFuncType = FunctionType::get(retType, funcStartParamTypes, false);
         FunctionCallee funcStartLogFunc =
             F.getParent()->getOrInsertFunction("pass_funcStartLogger", funcStartLogFuncType);
 
-        // Insert a call to funcStartLogger function in the function begin
         BasicBlock& entryBB = F.getEntryBlock();
         builder.SetInsertPoint(&entryBB.front());
         Value* funcName = builder.CreateGlobalStringPtr(F.getName());
         Value* args[] = {funcName};
         builder.CreateCall(funcStartLogFunc, args);
 
-        // Prepare callLogger function
         ArrayRef<Type*> callParamTypes = {builder.getInt8Ty()->getPointerTo(),
                                           builder.getInt8Ty()->getPointerTo(), Type::getInt64Ty(Ctx)};
         FunctionType* callLogFuncType = FunctionType::get(retType, callParamTypes, false);
         FunctionCallee callLogFunc = F.getParent()->getOrInsertFunction("pass_callLogger", callLogFuncType);
 
-        // Prepare funcEndLogger function
         ArrayRef<Type*> funcEndParamTypes = {builder.getInt8Ty()->getPointerTo(), Type::getInt64Ty(Ctx)};
         FunctionType* funcEndLogFuncType = FunctionType::get(retType, funcEndParamTypes, false);
         FunctionCallee funcEndLogFunc =
             F.getParent()->getOrInsertFunction("pass_funcEndLogger", funcEndLogFuncType);
 
-        // Prepare binOptLogger function
         ArrayRef<Type*> binOptParamTypes = {Type::getInt32Ty(Ctx),
                                             Type::getInt32Ty(Ctx),
                                             Type::getInt32Ty(Ctx),
@@ -66,15 +60,12 @@ struct PatternAnalyzerPass : public FunctionPass {
         FunctionCallee binOptLogFunc =
             F.getParent()->getOrInsertFunction("pass_binOptLogger", binOptLogFuncType);
 
-        // Insert loggers for call, binOpt and ret instructions
         for (auto& B : F) {
             for (auto& I : B) {
                 Value* valueAddr = ConstantInt::get(builder.getInt64Ty(), (int64_t)(&I));
                 if (auto* call = dyn_cast<CallInst>(&I)) {
-                    // Insert before call
                     builder.SetInsertPoint(call);
 
-                    // Insert a call to callLogger function
                     Function* callee = call->getCalledFunction();
                     if (callee && !isFuncLogger(callee->getName())) {
                         Value* calleeName = builder.CreateGlobalStringPtr(callee->getName());
@@ -84,20 +75,16 @@ struct PatternAnalyzerPass : public FunctionPass {
                     }
                 }
                 if (auto* ret = dyn_cast<ReturnInst>(&I)) {
-                    // Insert before ret
                     builder.SetInsertPoint(ret);
 
-                    // Insert a call to funcEndLogFunc function
                     Value* funcName = builder.CreateGlobalStringPtr(F.getName());
                     Value* args[] = {funcName};
                     builder.CreateCall(funcEndLogFunc, args);
                 }
                 if (auto* op = dyn_cast<BinaryOperator>(&I)) {
-                    // Insert after op
                     builder.SetInsertPoint(op);
                     builder.SetInsertPoint(&B, ++builder.GetInsertPoint());
 
-                    // Insert a call to binOptLogFunc function
                     Value* funcName = builder.CreateGlobalStringPtr(F.getName());
                     Value* opName = builder.CreateGlobalStringPtr(op->getOpcodeName());
                     Value* args[] = {opName, funcName};
