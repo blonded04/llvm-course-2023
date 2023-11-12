@@ -8,9 +8,9 @@
 #include <utility>
 #include <vector>
 
-constexpr std::size_t k_min_window_size = 2u;
-constexpr std::size_t k_max_window_size = 6u;
-constexpr std::size_t k_each_window_limit = 3u;
+constexpr std::size_t k_min_window_size = 1ul;
+constexpr std::size_t k_max_window_size = 5u;
+constexpr std::size_t k_each_window_top = 3ul;
 
 int main() {
     std::vector<std::map<std::vector<std::string>, unsigned>> statistics(k_max_window_size -
@@ -34,7 +34,7 @@ int main() {
     std::cout << "Statistics:\n\n";
     for (std::size_t sz = k_min_window_size; sz <= k_max_window_size; sz++) {
         std::vector<std::pair<std::vector<std::string>, unsigned>> most_frequent(
-            std::min(k_each_window_limit, statistics[sz - k_min_window_size].size()));
+            std::min(k_each_window_top, statistics[sz - k_min_window_size].size()));
         std::partial_sort_copy(statistics[sz - k_min_window_size].begin(),
                                statistics[sz - k_min_window_size].end(), most_frequent.begin(),
                                most_frequent.end(),

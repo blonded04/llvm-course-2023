@@ -41,24 +41,26 @@ struct PatternAnalyzerPass : public FunctionPass {
         builder.CreateCall(funcStartLogFunc, args);
 
         ArrayRef<Type*> callParamTypes = {builder.getInt8Ty()->getPointerTo(),
-                                          builder.getInt8Ty()->getPointerTo(), Type::getInt64Ty(Ctx)};
+                                          builder.getInt8Ty()->getPointerTo()};
         FunctionType* callLogFuncType = FunctionType::get(retType, callParamTypes, false);
         FunctionCallee callLogFunc = F.getParent()->getOrInsertFunction("pass_callLogger", callLogFuncType);
 
-        ArrayRef<Type*> funcEndParamTypes = {builder.getInt8Ty()->getPointerTo(), Type::getInt64Ty(Ctx)};
+        ArrayRef<Type*> funcEndParamTypes = {builder.getInt8Ty()->getPointerTo()};
         FunctionType* funcEndLogFuncType = FunctionType::get(retType, funcEndParamTypes, false);
         FunctionCallee funcEndLogFunc =
             F.getParent()->getOrInsertFunction("pass_funcEndLogger", funcEndLogFuncType);
 
-        ArrayRef<Type*> binOptParamTypes = {Type::getInt32Ty(Ctx),
-                                            Type::getInt32Ty(Ctx),
-                                            Type::getInt32Ty(Ctx),
-                                            builder.getInt8Ty()->getPointerTo(),
-                                            builder.getInt8Ty()->getPointerTo(),
-                                            Type::getInt64Ty(Ctx)};
+        ArrayRef<Type*> binOptParamTypes = {builder.getInt8Ty()->getPointerTo(),
+                                            builder.getInt8Ty()->getPointerTo()};
         FunctionType* binOptLogFuncType = FunctionType::get(retType, binOptParamTypes, false);
         FunctionCallee binOptLogFunc =
             F.getParent()->getOrInsertFunction("pass_binOptLogger", binOptLogFuncType);
+
+        ArrayRef<Type*> nonPhiNodeParamTypes = {builder.getInt8Ty()->getPointerTo(),
+                                                builder.getInt8Ty()->getPointerTo()};
+        FunctionType* nonPhiNodeLogFuncType = FunctionType::get(retType, binOptParamTypes, false);
+        FunctionCallee nonPhiNodeLogFunc =
+            F.getParent()->getOrInsertFunction("pass_nonPhiNodeLogger", binOptLogFuncType);
 
         for (auto& B : F) {
             for (auto& I : B) {
@@ -73,15 +75,13 @@ struct PatternAnalyzerPass : public FunctionPass {
                         Value* args[] = {funcName, calleeName};
                         builder.CreateCall(callLogFunc, args);
                     }
-                }
-                if (auto* ret = dyn_cast<ReturnInst>(&I)) {
+                } else if (auto* ret = dyn_cast<ReturnInst>(&I)) {
                     builder.SetInsertPoint(ret);
 
                     Value* funcName = builder.CreateGlobalStringPtr(F.getName());
                     Value* args[] = {funcName};
                     builder.CreateCall(funcEndLogFunc, args);
-                }
-                if (auto* op = dyn_cast<BinaryOperator>(&I)) {
+                } else if (auto* op = dyn_cast<BinaryOperator>(&I)) {
                     builder.SetInsertPoint(op);
                     builder.SetInsertPoint(&B, ++builder.GetInsertPoint());
 
@@ -89,6 +89,16 @@ struct PatternAnalyzerPass : public FunctionPass {
                     Value* opName = builder.CreateGlobalStringPtr(op->getOpcodeName());
                     Value* args[] = {opName, funcName};
                     builder.CreateCall(binOptLogFunc, args);
+                } else if (dyn_cast<PHINode>(&I) == nullptr) {
+                    auto* op = &I;
+
+                    builder.SetInsertPoint(op);
+                    builder.SetInsertPoint(&B, ++builder.GetInsertPoint());
+
+                    Value* funcName = builder.CreateGlobalStringPtr(F.getName());
+                    Value* opName = builder.CreateGlobalStringPtr(op->getOpcodeName());
+                    Value* args[] = {opName, funcName};
+                    builder.CreateCall(nonPhiNodeLogFunc, args);
                 }
             }
         }
@@ -102,5 +112,5 @@ struct PatternAnalyzerPass : public FunctionPass {
 static void registerPatternAnalyzerPass(const PassManagerBuilder&, legacy::PassManagerBase& PM) {
     PM.add(new PatternAnalyzerPass());
 }
-static RegisterStandardPasses RegisterPatternAnalyzerPass(PassManagerBuilder::EP_EarlyAsPossible,
+static RegisterStandardPasses RegisterPatternAnalyzerPass(PassManagerBuilder::EP_OptimizerLast,
                                                           registerPatternAnalyzerPass);
