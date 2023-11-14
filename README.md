@@ -14,7 +14,7 @@ clang-12 ./solution/apps/main.c ./solution/src/life/life.c ./solution/src/sim/si
 
 ./subbuild/dynamic_pass.out > ./subbuild/temporary_log.txt
 
-clang++-12 -std=c++17 -O3 ./pass/log_parser.cpp -o ./subbuild/log_parser.out
+clang++-12 -std=c++17 -O3 -march=native ./pass/log_parser.cpp -o ./subbuild/log_parser.out
 
 ./subbuild/log_parser.out < ./subbuild/temporary_log.txt > pass_result.txt
 ```
