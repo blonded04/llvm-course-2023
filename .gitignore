@@ -1,0 +1,12 @@
+**/build/
+**/subbuild/
+**/cmake_deps/
+
+**/.vscode/
+**/.history/
+**/.gdb_history
+
+*.o
+*.out
+*.so
+*.a
