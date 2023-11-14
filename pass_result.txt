@@ -1,87 +1,72 @@
 Statistics:
 
+	Top 3 most frequent patterns of size 1 are:
+	* Top 1 pattern occurs 404278 times
+	--1-- [LOG] In function 'app': binop 'add' occured
+	* Top 2 pattern occurs 335604 times
+	--2-- [LOG] In function 'simGetWindow': instruction '  %1 = load i1, i1* @simIsInitialized.isInitialized, align 4' was seen
+	* Top 3 pattern occurs 335604 times
+	--3-- [LOG] End function 'simGetWindow'
+
 	Top 3 most frequent patterns of size 2 are:
-	* Top 1 pattern occurs 368306 times
-	--1-- [LOG] In function 'calculateNextGeneration': 'add' occured
-	--1-- [LOG] In function 'calculateNextGeneration': 'add' occured
-	* Top 2 pattern occurs 215674 times
-	--2-- [LOG] Start function 'simIsInitialized'
-	--2-- [LOG] End function 'simIsInitialized'
-	* Top 3 pattern occurs 215672 times
-	--3-- [LOG] Start function 'simGetWindow'
-	--3-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
+	* Top 1 pattern occurs 335604 times
+	--1-- [LOG] In function 'simGetWindow': instruction '  %1 = load i1, i1* @simIsInitialized.isInitialized, align 4' was seen
+	--1-- [LOG] Start function 'simGetWindow'
+	* Top 2 pattern occurs 335603 times
+	--2-- [LOG] Start function 'simGetWindow'
+	--2-- [LOG] End function 'simGetWindow'
+	* Top 3 pattern occurs 315600 times
+	--3-- [LOG] CALL 'simKeepRunning' -> 'simGetWindow'
+	--3-- [LOG] In function 'simGetWindow': instruction '  %1 = load i1, i1* @simIsInitialized.isInitialized, align 4' was seen
 
 	Top 3 most frequent patterns of size 3 are:
-	* Top 1 pattern occurs 280096 times
-	--1-- [LOG] In function 'calculateNextGeneration': 'add' occured
-	--1-- [LOG] In function 'calculateNextGeneration': 'add' occured
-	--1-- [LOG] In function 'calculateNextGeneration': 'add' occured
-	* Top 2 pattern occurs 215672 times
+	* Top 1 pattern occurs 335603 times
+	--1-- [LOG] In function 'simGetWindow': instruction '  %1 = load i1, i1* @simIsInitialized.isInitialized, align 4' was seen
+	--1-- [LOG] Start function 'simGetWindow'
+	--1-- [LOG] End function 'simGetWindow'
+	* Top 2 pattern occurs 315600 times
+	--2-- [LOG] CALL 'simKeepRunning' -> 'simGetWindow'
+	--2-- [LOG] In function 'simGetWindow': instruction '  %1 = load i1, i1* @simIsInitialized.isInitialized, align 4' was seen
 	--2-- [LOG] Start function 'simGetWindow'
-	--2-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
-	--2-- [LOG] Start function 'simIsInitialized'
-	* Top 3 pattern occurs 215672 times
-	--3-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
-	--3-- [LOG] Start function 'simIsInitialized'
-	--3-- [LOG] End function 'simIsInitialized'
+	* Top 3 pattern occurs 157799 times
+	--3-- [LOG] CALL 'simKeepRunning' -> 'sfRenderWindow_isOpen'
+	--3-- [LOG] In function 'simKeepRunning': instruction '  %13 = icmp eq i32 %12, 0' was seen
+	--3-- [LOG] CALL 'simKeepRunning' -> 'simGetWindow'
 
 	Top 3 most frequent patterns of size 4 are:
-	* Top 1 pattern occurs 215672 times
+	* Top 1 pattern occurs 315599 times
+	--1-- [LOG] CALL 'simKeepRunning' -> 'simGetWindow'
+	--1-- [LOG] In function 'simGetWindow': instruction '  %1 = load i1, i1* @simIsInitialized.isInitialized, align 4' was seen
 	--1-- [LOG] Start function 'simGetWindow'
-	--1-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
-	--1-- [LOG] Start function 'simIsInitialized'
-	--1-- [LOG] End function 'simIsInitialized'
-	* Top 2 pattern occurs 215671 times
-	--2-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
-	--2-- [LOG] Start function 'simIsInitialized'
-	--2-- [LOG] End function 'simIsInitialized'
-	--2-- [LOG] End function 'simGetWindow'
-	* Top 3 pattern occurs 205669 times
-	--3-- [LOG] CALL 'simKeepRunning' -> 'simGetWindow'
-	--3-- [LOG] Start function 'simGetWindow'
-	--3-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
-	--3-- [LOG] Start function 'simIsInitialized'
+	--1-- [LOG] End function 'simGetWindow'
+	* Top 2 pattern occurs 157799 times
+	--2-- [LOG] CALL 'simKeepRunning' -> 'sfRenderWindow_isOpen'
+	--2-- [LOG] In function 'simKeepRunning': instruction '  %13 = icmp eq i32 %12, 0' was seen
+	--2-- [LOG] CALL 'simKeepRunning' -> 'simGetWindow'
+	--2-- [LOG] In function 'simGetWindow': instruction '  %1 = load i1, i1* @simIsInitialized.isInitialized, align 4' was seen
+	* Top 3 pattern occurs 157799 times
+	--3-- [LOG] CALL 'simKeepRunning' -> 'sfRenderWindow_pollEvent'
+	--3-- [LOG] In function 'simKeepRunning': instruction '  %26 = icmp ne i32 %25, 0' was seen
+	--3-- [LOG] In function 'simKeepRunning': instruction '  %27 = load i32, i32* %9, align 4' was seen
+	--3-- [LOG] In function 'simKeepRunning': instruction '  %28 = icmp eq i32 %27, 0' was seen
 
 	Top 3 most frequent patterns of size 5 are:
-	* Top 1 pattern occurs 215671 times
-	--1-- [LOG] Start function 'simGetWindow'
-	--1-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
-	--1-- [LOG] Start function 'simIsInitialized'
-	--1-- [LOG] End function 'simIsInitialized'
-	--1-- [LOG] End function 'simGetWindow'
-	* Top 2 pattern occurs 205669 times
-	--2-- [LOG] CALL 'simKeepRunning' -> 'simGetWindow'
-	--2-- [LOG] Start function 'simGetWindow'
-	--2-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
-	--2-- [LOG] Start function 'simIsInitialized'
-	--2-- [LOG] End function 'simIsInitialized'
-	* Top 3 pattern occurs 103678 times
-	--3-- [LOG] In function 'calculateNextGeneration': 'add' occured
-	--3-- [LOG] In function 'calculateNextGeneration': 'add' occured
-	--3-- [LOG] In function 'calculateNextGeneration': 'add' occured
-	--3-- [LOG] In function 'calculateNextGeneration': 'add' occured
-	--3-- [LOG] In function 'calculateNextGeneration': 'add' occured
-
-	Top 3 most frequent patterns of size 6 are:
-	* Top 1 pattern occurs 205668 times
+	* Top 1 pattern occurs 157799 times
 	--1-- [LOG] CALL 'simKeepRunning' -> 'simGetWindow'
+	--1-- [LOG] In function 'simGetWindow': instruction '  %1 = load i1, i1* @simIsInitialized.isInitialized, align 4' was seen
 	--1-- [LOG] Start function 'simGetWindow'
-	--1-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
-	--1-- [LOG] Start function 'simIsInitialized'
-	--1-- [LOG] End function 'simIsInitialized'
 	--1-- [LOG] End function 'simGetWindow'
-	* Top 2 pattern occurs 102834 times
+	--1-- [LOG] CALL 'simKeepRunning' -> 'sfRenderWindow_pollEvent'
+	* Top 2 pattern occurs 157799 times
 	--2-- [LOG] CALL 'simKeepRunning' -> 'sfRenderWindow_isOpen'
+	--2-- [LOG] In function 'simKeepRunning': instruction '  %13 = icmp eq i32 %12, 0' was seen
 	--2-- [LOG] CALL 'simKeepRunning' -> 'simGetWindow'
+	--2-- [LOG] In function 'simGetWindow': instruction '  %1 = load i1, i1* @simIsInitialized.isInitialized, align 4' was seen
 	--2-- [LOG] Start function 'simGetWindow'
-	--2-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
-	--2-- [LOG] Start function 'simIsInitialized'
-	--2-- [LOG] End function 'simIsInitialized'
-	* Top 3 pattern occurs 102834 times
-	--3-- [LOG] CALL 'simKeepRunning' -> 'sfTime_asSeconds'
-	--3-- [LOG] In function 'simKeepRunning': 'fmul' occured
-	--3-- [LOG] CALL 'simKeepRunning' -> 'simGetWindow'
-	--3-- [LOG] Start function 'simGetWindow'
-	--3-- [LOG] CALL 'simGetWindow' -> 'simIsInitialized'
-	--3-- [LOG] Start function 'simIsInitialized'
+	* Top 3 pattern occurs 157799 times
+	--3-- [LOG] CALL 'simKeepRunning' -> 'sfRenderWindow_pollEvent'
+	--3-- [LOG] In function 'simKeepRunning': instruction '  %26 = icmp ne i32 %25, 0' was seen
+	--3-- [LOG] In function 'simKeepRunning': instruction '  %27 = load i32, i32* %9, align 4' was seen
+	--3-- [LOG] In function 'simKeepRunning': instruction '  %28 = icmp eq i32 %27, 0' was seen
+	--3-- [LOG] In function 'simKeepRunning': binop 'and' occured
 

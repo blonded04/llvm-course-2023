@@ -17,7 +17,7 @@ struct PatternAnalyzerPass : public FunctionPass {
 
     bool isFuncLogger(StringRef name) {
         return name == "pass_binOptLogger" || name == "pass_callLogger" || name == "pass_funcStartLogger" ||
-               name == "pass_funcEndLogger";
+               name == "pass_funcEndLogger" || name == "pass_nonPhiNodeLogger";
     }
 
     bool runOnFunction(Function& F) override {
@@ -89,14 +89,76 @@ struct PatternAnalyzerPass : public FunctionPass {
                     Value* opName = builder.CreateGlobalStringPtr(op->getOpcodeName());
                     Value* args[] = {opName, funcName};
                     builder.CreateCall(binOptLogFunc, args);
-                } else if (dyn_cast<PHINode>(&I) == nullptr) {
-                    auto* op = &I;
-
-                    builder.SetInsertPoint(op);
-                    builder.SetInsertPoint(&B, ++builder.GetInsertPoint());
-
+                } else if (auto* op = dyn_cast<AllocaInst>(&I)) {
                     Value* funcName = builder.CreateGlobalStringPtr(F.getName());
-                    Value* opName = builder.CreateGlobalStringPtr(op->getOpcodeName());
+
+                    std::string str;
+                    llvm::raw_string_ostream(str) << *op;
+                    Value* opName = builder.CreateGlobalStringPtr(str.c_str());
+
+                    Value* args[] = {opName, funcName};
+                    builder.CreateCall(nonPhiNodeLogFunc, args);
+                } else if (auto* op = dyn_cast<LoadInst>(&I)) {
+                    Value* funcName = builder.CreateGlobalStringPtr(F.getName());
+
+                    std::string str;
+                    llvm::raw_string_ostream(str) << *op;
+                    Value* opName = builder.CreateGlobalStringPtr(str.c_str());
+
+                    Value* args[] = {opName, funcName};
+                    builder.CreateCall(nonPhiNodeLogFunc, args);
+                } else if (auto* op = dyn_cast<StoreInst>(&I)) {
+                    Value* funcName = builder.CreateGlobalStringPtr(F.getName());
+
+                    std::string str;
+                    llvm::raw_string_ostream(str) << *op;
+                    Value* opName = builder.CreateGlobalStringPtr(str.c_str());
+
+                    Value* args[] = {opName, funcName};
+                    builder.CreateCall(nonPhiNodeLogFunc, args);
+                } else if (auto* op = dyn_cast<FenceInst>(&I)) {
+                    Value* funcName = builder.CreateGlobalStringPtr(F.getName());
+
+                    std::string str;
+                    llvm::raw_string_ostream(str) << *op;
+                    Value* opName = builder.CreateGlobalStringPtr(str.c_str());
+
+                    Value* args[] = {opName, funcName};
+                    builder.CreateCall(nonPhiNodeLogFunc, args);
+                } else if (auto* op = dyn_cast<AtomicCmpXchgInst>(&I)) {
+                    Value* funcName = builder.CreateGlobalStringPtr(F.getName());
+
+                    std::string str;
+                    llvm::raw_string_ostream(str) << *op;
+                    Value* opName = builder.CreateGlobalStringPtr(str.c_str());
+
+                    Value* args[] = {opName, funcName};
+                    builder.CreateCall(nonPhiNodeLogFunc, args);
+                } else if (auto* op = dyn_cast<AtomicCmpXchgInst>(&I)) {
+                    Value* funcName = builder.CreateGlobalStringPtr(F.getName());
+
+                    std::string str;
+                    llvm::raw_string_ostream(str) << *op;
+                    Value* opName = builder.CreateGlobalStringPtr(str.c_str());
+
+                    Value* args[] = {opName, funcName};
+                    builder.CreateCall(nonPhiNodeLogFunc, args);
+                } else if (auto* op = dyn_cast<GetElementPtrInst>(&I)) {
+                    Value* funcName = builder.CreateGlobalStringPtr(F.getName());
+
+                    std::string str;
+                    llvm::raw_string_ostream(str) << *op;
+                    Value* opName = builder.CreateGlobalStringPtr(str.c_str());
+
+                    Value* args[] = {opName, funcName};
+                    builder.CreateCall(nonPhiNodeLogFunc, args);
+                } else if (auto* op = dyn_cast<CmpInst>(&I)) {
+                    Value* funcName = builder.CreateGlobalStringPtr(F.getName());
+
+                    std::string str;
+                    llvm::raw_string_ostream(str) << *op;
+                    Value* opName = builder.CreateGlobalStringPtr(str.c_str());
+
                     Value* args[] = {opName, funcName};
                     builder.CreateCall(nonPhiNodeLogFunc, args);
                 }
